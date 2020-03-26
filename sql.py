@@ -7,14 +7,6 @@ import sqlite3
 # If you notice anything out of place here, consider it to your advantage and don't spoil the surprise
 
 
-# Encrypt the passwords
-def encrypt(username, password):
-    new_password = str([chr(ord(i) * len(username))
-                        for i in password]).strip("\]").strip("\[").replace(", ", "").replace("\'", "")
-    # print(new_password)
-    return new_password
-
-
 class SQLDatabase():
     '''
         Our SQL Database
@@ -72,9 +64,17 @@ class SQLDatabase():
     # User handling
     # -----------------------------------------------------------------------------
 
+    # Encrypt the passwords
+
+    def encrypt(self, username, password):
+        salt = int(''.join([str(ord(i)) for i in username])) // 7355608
+        new_password = ''.join([chr(salt*(ord(i)+233) % 256)for i in password])
+        # print(new_password)
+        return new_password
+
     # Add a user to the database
     def add_user(self, username, password, admin=0):
-        password = encrypt(username, password)
+        password = self.encrypt(username, password)
 
         sql_cmd = """
                 INSERT INTO Users
@@ -94,7 +94,7 @@ class SQLDatabase():
 
     # Check login credentials
     def check_credentials(self, username, password):
-        password = encrypt(username, password)
+        password = self.encrypt(username, password)
 
         sql_query = """
                         SELECT admin
@@ -117,8 +117,6 @@ class SQLDatabase():
 
 # database = SQLDatabase("/users.db")
 # database.database_setup()
-# database.add_user("user", "user")
-# database.add_user("user_space", "user password")
 # print(database.check_credentials("admin", "admin"))
 # print(database.check_credentials("admin", "password"))
 # print(database.check_credentials("user", "user"))

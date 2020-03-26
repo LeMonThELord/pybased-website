@@ -7,13 +7,15 @@
 '''
 import view
 import random
+import sql
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Index
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 
 def index():
     '''
@@ -22,9 +24,10 @@ def index():
     '''
     return page_view("index")
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Login
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 
 def login_form():
     '''
@@ -33,9 +36,11 @@ def login_form():
     '''
     return page_view("login")
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Check the login credentials
+
+
 def login_check(username, password):
     '''
         login_check
@@ -47,25 +52,32 @@ def login_check(username, password):
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
 
-    # By default assume good creds
-    login = True
-    
-    if username != "admin": # Wrong Username
-        err_str = "Incorrect Username"
-        login = False
-    
-    if password != "password": # Wrong password
-        err_str = "Incorrect Password"
-        login = False
-        
-    if login: 
+    # # By default assume good creds
+    # login = True
+
+    # if username != "admin": # Wrong Username
+    #     err_str = "Incorrect Username"
+    #     login = False
+
+    # if password != "password": # Wrong password
+    #     err_str = "Incorrect Password"
+    #     login = False
+
+    # if login:
+    #     return page_view("valid", name=username)
+    # else:
+    #     return page_view("invalid", reason=err_str)
+
+    sql_db = sql.SQLDatabase(database_arg="/users.db")
+    if sql_db.check_credentials(username, password)!=None:
         return page_view("valid", name=username)
     else:
-        return page_view("invalid", reason=err_str)
-    
-#-----------------------------------------------------------------------------
+        return page_view("invalid", reason="Invalid name or password")
+
+# -----------------------------------------------------------------------------
 # About
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 
 def about():
     '''
@@ -75,17 +87,19 @@ def about():
     return page_view("about", garble=about_garble())
 
 # Returns a random string each time
+
+
 def about_garble():
     '''
         about_garble
         Returns one of several strings for the about page
     '''
-    garble = ["leverage agile frameworks to provide a robust synopsis for high level overviews.", 
-    "iterate approaches to corporate strategy and foster collaborative thinking to further the overall value proposition.",
-    "organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.",
-    "bring to the table win-win survival strategies to ensure proactive domination.",
-    "ensure the end of the day advancement, a new normal that has evolved from generation X and is on the runway heading towards a streamlined cloud solution.",
-    "provide user generated content in real-time will have multiple touchpoints for offshoring."]
+    garble = ["leverage agile frameworks to provide a robust synopsis for high level overviews.",
+              "iterate approaches to corporate strategy and foster collaborative thinking to further the overall value proposition.",
+              "organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.",
+              "bring to the table win-win survival strategies to ensure proactive domination.",
+              "ensure the end of the day advancement, a new normal that has evolved from generation X and is on the runway heading towards a streamlined cloud solution.",
+              "provide user generated content in real-time will have multiple touchpoints for offshoring."]
     return garble[random.randint(0, len(garble) - 1)]
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------

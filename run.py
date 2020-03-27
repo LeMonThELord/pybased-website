@@ -14,6 +14,7 @@
 
 # -----------------------------------------------------------------------------
 
+import os
 import sys
 from bottle import run
 import sql
@@ -62,7 +63,7 @@ def reset_db():
         manage_db
         Starts up and re-initialises an SQL databse for the server
     '''
-    database_arg = "/users.db"
+    database_arg = "./users.db"
     sql_db = sql.SQLDatabase(database_arg=database_arg)
     sql_db.database_setup()
     return
@@ -102,6 +103,5 @@ def run_commands(args):
             print("Command '{command}' not found".format(command=command))
 
 # -----------------------------------------------------------------------------
-
 
 run_commands(sys.argv)

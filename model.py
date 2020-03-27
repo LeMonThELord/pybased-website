@@ -27,7 +27,7 @@ def get_cookie():
 def set_cookie(username, password, role, max_age=600):
     response.set_cookie('username', username, secret='usafe', max_age=max_age)
     response.set_cookie('password', password, secret='psafe', max_age=max_age)
-    response.set_cookie('role', result, secret='rsafe', max_age=max_age)
+    response.set_cookie('role', role, secret='rsafe', max_age=max_age)
 
 
 def clr_cookie():
@@ -109,7 +109,7 @@ def login_check(username, password):
             role = "User"
         else:
             role = "Nobody"
-        set_cookie(username, password, role)
+        set_cookie(username, password, result)
         return page_view("valid", name=username, role=role)
     else:
         return page_view("invalid", reason="Invalid name or password")

@@ -1,5 +1,5 @@
 import sqlite3
-
+import os
 # This class is a simple handler for all of our SQL database actions
 # Practicing a good separation of concerns, we should only ever call
 # These functions from our models
@@ -119,7 +119,8 @@ class SQLDatabase():
             return None
 
 
-userbase = SQLDatabase(database_arg="/users.db")
+userbase = SQLDatabase(database_arg="./users.db")
+# userbase.database_setup()
 # database = SQLDatabase("/users.db")
 # database.database_setup()
 # print(database.check_credentials("admin", "admin"))

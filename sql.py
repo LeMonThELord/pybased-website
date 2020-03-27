@@ -75,7 +75,7 @@ class SQLDatabase():
 
     # Add a user to the database
     def add_user(self, username, password, admin=0):
-        if (username == None) or (password == None):
+        if (username == None) or (password == None) or (self.check_credentials(username, password) != None):
             return False
 
         password = self.encrypt(username, password)

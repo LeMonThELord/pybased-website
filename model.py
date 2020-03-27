@@ -13,6 +13,26 @@ from bottle import request, response
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
 
+
+# -----------------------------------------------------------------------------
+# Cookie
+# -----------------------------------------------------------------------------
+def get_cookie():
+    username = request.get_cookie('username', secret='usafe')
+    password = request.get_cookie('password', secret='psafe')
+    role = request.get_cookie('role', secret='rsafe')
+    return (username, password, role)
+
+
+def set_cookie(username, password, role, max_age=600):
+    response.set_cookie('username', username, secret='usafe', max_age=max_age)
+    response.set_cookie('password', password, secret='psafe', max_age=max_age)
+    response.set_cookie('role', result, secret='rsafe', max_age=max_age)
+
+
+def clr_cookie():
+    set_cookie(None, None, None, max_age=1)
+
 # -----------------------------------------------------------------------------
 # Index
 # -----------------------------------------------------------------------------
@@ -32,9 +52,7 @@ def index():
 
 def load_login():
     # Getting cookie from the user
-    username = request.get_cookie('username', secret='usafe')
-    password = request.get_cookie('password', secret='psafe')
-    role = request.get_cookie('role', secret='rsafe')
+    username, password, role = get_cookie()
 
     # Check the cookie
     result = sql.userbase.check_credentials(username, password)
@@ -91,9 +109,7 @@ def login_check(username, password):
             role = "User"
         else:
             role = "Nobody"
-        response.set_cookie('username', username, secret='usafe', max_age=600)
-        response.set_cookie('password', password, secret='psafe', max_age=600)
-        response.set_cookie('role', result, secret='rsafe', max_age=600)
+        set_cookie(username, password, role)
         return page_view("valid", name=username, role=role)
     else:
         return page_view("invalid", reason="Invalid name or password")

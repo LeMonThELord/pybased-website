@@ -17,7 +17,6 @@ class SQLDatabase():
     def __init__(self, database_arg=":memory:"):
         self.conn = sqlite3.connect(database_arg)
         self.cur = self.conn.cursor()
-        self.size = 0
 
     # SQLite 3 does not natively support multiple commands in a single statement
     # Using this handler restores this functionality
@@ -67,6 +66,8 @@ class SQLDatabase():
     # Encrypt the passwords
 
     def encrypt(self, username, password):
+        if (username == None) or (password == None):
+            return None
         salt = int(''.join([str(ord(i)) for i in username])) // 7355608
         new_password = ''.join([chr(salt*(ord(i)+233) % 256)for i in password])
         # print(new_password)
@@ -74,17 +75,18 @@ class SQLDatabase():
 
     # Add a user to the database
     def add_user(self, username, password, admin=0):
+        if (username == None) or (password == None):
+            return False
+
         password = self.encrypt(username, password)
 
         sql_cmd = """
                 INSERT INTO Users
-                VALUES({id}, '{username}', '{password}', {admin})
+                VALUES('{username}', '{password}', {admin})
             """
 
-        sql_cmd = sql_cmd.format(id=self.size,
-                                 username=username, password=password, admin=admin)
-
-        self.size += 1
+        sql_cmd = sql_cmd.format(
+            username=username, password=password, admin=admin)
 
         self.execute(sql_cmd)
         self.commit()
@@ -94,6 +96,9 @@ class SQLDatabase():
 
     # Check login credentials
     def check_credentials(self, username, password):
+        if (username == None) or (password == None):
+            return None
+
         password = self.encrypt(username, password)
 
         sql_query = """
@@ -115,6 +120,7 @@ class SQLDatabase():
             return None
 
 
+userbase = SQLDatabase(database_arg="/users.db")
 # database = SQLDatabase("/users.db")
 # database.database_setup()
 # print(database.check_credentials("admin", "admin"))

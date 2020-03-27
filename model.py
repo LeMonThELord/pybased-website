@@ -8,6 +8,7 @@
 import view
 import random
 import sql
+from bottle import request, response
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -29,12 +30,43 @@ def index():
 # -----------------------------------------------------------------------------
 
 
+def load_login():
+    # Getting cookie from the user
+    username = request.get_cookie('username', secret='usafe')
+    password = request.get_cookie('password', secret='psafe')
+    role = request.get_cookie('role', secret='rsafe')
+
+    # Check the cookie
+    result = sql.userbase.check_credentials(username, password)
+    if result != None:
+        if result == 1:
+            role = "Admin"
+        elif result == 0:
+            role = "User"
+        else:
+            role = "Nobody"
+        return logged_in(username, role)
+    else:
+        return login_form()
+# ------------------------------------------------------------------------------
+
+
 def login_form():
     '''
         login_form
         Returns the view for the login_form
     '''
     return page_view("login")
+
+# ------------------------------------------------------------------------------
+
+
+def logged_in(name, role):
+    '''
+        login_form
+        Returns the view for the logged_in page
+    '''
+    return page_view("logged_in", name=name, role=role)
 
 # -----------------------------------------------------------------------------
 
@@ -51,26 +83,18 @@ def login_check(username, password):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
-
-    # # By default assume good creds
-    # login = True
-
-    # if username != "admin": # Wrong Username
-    #     err_str = "Incorrect Username"
-    #     login = False
-
-    # if password != "password": # Wrong password
-    #     err_str = "Incorrect Password"
-    #     login = False
-
-    # if login:
-    #     return page_view("valid", name=username)
-    # else:
-    #     return page_view("invalid", reason=err_str)
-
-    sql_db = sql.SQLDatabase(database_arg="/users.db")
-    if sql_db.check_credentials(username, password)!=None:
-        return page_view("valid", name=username)
+    result = sql.userbase.check_credentials(username, password)
+    if result != None:
+        if result == 1:
+            role = "Admin"
+        elif result == 0:
+            role = "User"
+        else:
+            role = "Nobody"
+        response.set_cookie('username', username, secret='usafe', max_age=600)
+        response.set_cookie('password', password, secret='psafe', max_age=600)
+        response.set_cookie('role', result, secret='rsafe', max_age=600)
+        return page_view("valid", name=username, role=role)
     else:
         return page_view("invalid", reason="Invalid name or password")
 

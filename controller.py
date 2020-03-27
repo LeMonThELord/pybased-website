@@ -4,13 +4,13 @@
     maybe some simple program logic
 '''
 
-from bottle import route, get, post, request, static_file
+from bottle import route, get, post, static_file, request
 
 import model
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Static file paths
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Allow image loading
 @route('/img/<picture:path>')
@@ -26,7 +26,7 @@ def serve_pictures(picture):
     '''
     return static_file(picture, root='static/img/')
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Allow CSS
 @route('/css/<css:path>')
@@ -42,7 +42,7 @@ def serve_css(css):
     '''
     return static_file(css, root='static/css/')
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Allow javascript
 @route('/js/<js:path>')
@@ -58,9 +58,9 @@ def serve_js(js):
     '''
     return static_file(js, root='static/js/')
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Pages
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Redirect to login
 @get('/')
@@ -68,31 +68,31 @@ def serve_js(js):
 def get_index():
     '''
         get_index
-        
+
         Serves the index page
     '''
     return model.index()
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Display the login page
 @get('/login')
 def get_login_controller():
     '''
         get_login
-        
+
         Serves the login page
     '''
-    return model.login_form()
+    return model.load_login()
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Attempt the login
 @post('/login')
 def post_login():
     '''
         post_login
-        
+
         Handles login attempts
         Expects a form containing 'username' and 'password' fields
     '''
@@ -100,21 +100,47 @@ def post_login():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
-    
+
     # Call the appropriate method
     return model.login_check(username, password)
 
 
-#-----------------------------------------------------------------------------
-
+# -----------------------------------------------------------------------------
 @get('/about')
 def get_about():
     '''
         get_about
-        
+
         Serves the about page
     '''
     return model.about()
-   
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Display the register page
+@get('/register')
+def get_register():
+    return template('register')
+
+# -----------------------------------------------------------------------------
+
+
+@post('/register')
+def register_post():
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    if read_user(username, password, nopwd=True):
+        write_user(username, password)
+        return 'success'
+    return 'register faild'
+
+# -----------------------------------------------------------------------------
+
+# Display the message page
+@get('/message')
+def get_message_controller():
+    '''
+        get_message
+
+        Serves the message page
+    '''
+    return model.message_form()

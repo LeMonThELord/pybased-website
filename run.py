@@ -40,13 +40,16 @@ port = 8080
 # Turn this off for production
 debug = True
 
+# Hot Reboot
+reloader = True
+
 
 def run_server():
     '''
         run_server
         Runs a bottle server
     '''
-    run(host=host, port=port, debug=debug)
+    run(host=host, port=port, debug=debug, reloader=reloader)
 
 # -----------------------------------------------------------------------------
 # Optional SQL support

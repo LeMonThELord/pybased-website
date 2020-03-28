@@ -65,7 +65,7 @@ class SQLDatabase():
     # Encrypt the passwords
 
     def encrypt(self, username, password):
-        if (username == None) or (password == None):
+        if (username == None) or (password == None) or (username == "") or (password == ""):
             return None
         salt = int(''.join([str(ord(i)) for i in username])) // 7355608
         new_password = ''.join([chr(salt*(ord(i)+233) % 256)for i in password])
@@ -74,7 +74,7 @@ class SQLDatabase():
 
     # Add a user to the database
     def add_user(self, username, password, admin=0):
-        if (username == None) or (password == None) or (self.check_credentials(username, password) != None):
+        if (username == None) or (password == None) or (username == "") or (password == "") or (self.check_credentials(username, password) != None):
             return False
 
         password = self.encrypt(username, password)

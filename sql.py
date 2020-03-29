@@ -120,7 +120,7 @@ class SQLDatabase():
 
 
 userbase = SQLDatabase(database_arg="./users.db")
-# userbase.database_setup()
+userbase.database_setup()
 # database = SQLDatabase("/users.db")
 # database.database_setup()
 # print(database.check_credentials("admin", "admin"))

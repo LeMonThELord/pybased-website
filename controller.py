@@ -1,6 +1,6 @@
 '''
-    This file will handle our typical Bottle requests and responses 
-    You should not have anything beyond basic page loads, handling forms and 
+    This file will handle our typical Bottle requests and responses
+    You should not have anything beyond basic page loads, handling forms and
     maybe some simple program logic
 '''
 
@@ -104,6 +104,17 @@ def post_login():
     # Call the appropriate method
     return model.login_check(username, password)
 
+# -----------------------------------------------------------------------------
+# @post('/logged_in')
+# def post_logged_in():
+#     '''
+#     After logged in
+#     Back to home page.
+#
+#     '''
+#
+#     return model.back_to_home()
+
 
 # -----------------------------------------------------------------------------
 @get('/about')
@@ -119,19 +130,19 @@ def get_about():
 # Display the register page
 @get('/register')
 def get_register():
-    return template('register')
+    '''
+        get register page
+    '''
+    return model.register()
 
 # -----------------------------------------------------------------------------
-
+# Attempt to register
 
 @post('/register')
 def register_post():
     username = request.forms.get('username')
     password = request.forms.get('password')
-    if read_user(username, password, nopwd=True):
-        write_user(username, password)
-        return 'success'
-    return 'register faild'
+    return model.new_account_add(username, password)
 
 # -----------------------------------------------------------------------------
 

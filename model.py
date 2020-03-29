@@ -115,6 +115,57 @@ def login_check(username, password):
         return page_view("invalid", reason="Invalid name or password")
 
 # -----------------------------------------------------------------------------
+
+def logout():
+    '''
+    logout this account
+    back to login page
+    '''
+
+    clr_cookie()
+    return page_view("login")
+
+# -----------------------------------------------------------------------------
+def register():
+    '''
+    Jump to register page
+
+    '''
+
+    return page_view("register")
+
+
+# -----------------------------------------------------------------------------
+# def back_to_home():
+#     '''
+#     Jump back to home page
+#
+#     '''
+#
+#     return page_view("home")
+#
+
+# ------------------------------------------------------------------------------
+def new_account_add(username, password):
+    '''
+    Add new user into database
+
+    '''
+    if(username != None and password != None):
+        sql.userbase.add_user(username, password)
+        result = sql.userbase.check_credentials(username, password)
+        if result != None:
+            if result == 1:
+                role = "Admin"
+            elif result == 0:
+                role = "User"
+            else:
+                role = "Nobody"
+            set_cookie(username, password, result)
+            return page_view("valid", name=username, role=role)
+        else:
+            return page_view("invalid", reason="Invalid name or password")
+
 # About
 # -----------------------------------------------------------------------------
 
@@ -134,12 +185,7 @@ def about_garble():
         about_garble
         Returns one of several strings for the about page
     '''
-    garble = ["leverage agile frameworks to provide a robust synopsis for high level overviews.",
-              "iterate approaches to corporate strategy and foster collaborative thinking to further the overall value proposition.",
-              "organically grow the holistic world view of disruptive innovation via workplace diversity and empowerment.",
-              "bring to the table win-win survival strategies to ensure proactive domination.",
-              "ensure the end of the day advancement, a new normal that has evolved from generation X and is on the runway heading towards a streamlined cloud solution.",
-              "provide user generated content in real-time will have multiple touchpoints for offshoring."]
-    return garble[random.randint(0, len(garble) - 1)]
+    garble = "create a better model of program language learning."
+    return garble
 
 # -----------------------------------------------------------------------------

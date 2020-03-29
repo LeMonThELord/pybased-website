@@ -105,15 +105,16 @@ def post_login():
     return model.login_check(username, password)
 
 # -----------------------------------------------------------------------------
-# @post('/logged_in')
-# def post_logged_in():
-#     '''
-#     After logged in
-#     Back to home page.
-#
-#     '''
-#
-#     return model.back_to_home()
+@post('/valid')
+def post_valid():
+    '''
+    After logged in
+    Back to index page.
+
+    '''
+    # back = request.button.get("My homepage")
+    # if back is not None:
+    return model.back_to_index()
 
 
 # -----------------------------------------------------------------------------
@@ -155,3 +156,22 @@ def get_message_controller():
         Serves the message page
     '''
     return model.message_form()
+
+
+# -----------------------------------------------------------------------------
+# Logout
+@get('/logout')
+def log_out():
+    '''
+        logout from this account
+    '''
+    return model.logout()
+
+# -----------------------------------------------------------------------------
+# Logout
+@post('/logout')
+def log_out():
+    '''
+        Back to login page
+    '''
+    return model.login_form()

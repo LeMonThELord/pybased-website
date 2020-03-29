@@ -123,7 +123,7 @@ def logout():
     '''
 
     clr_cookie()
-    return page_view("login")
+    return page_view("logout")
 
 # -----------------------------------------------------------------------------
 def register():
@@ -136,14 +136,16 @@ def register():
 
 
 # -----------------------------------------------------------------------------
-# def back_to_home():
-#     '''
-#     Jump back to home page
-#
-#     '''
-#
-#     return page_view("home")
-#
+def back_to_index():
+    '''
+    Jump back to index page
+
+    '''
+
+    return page_view("index")
+
+
+
 
 # ------------------------------------------------------------------------------
 def new_account_add(username, password):
